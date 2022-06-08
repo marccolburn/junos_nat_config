@@ -1,0 +1,18 @@
+---
+- name: Generate config in text for debug
+  template:                                                                                                                             
+    src: "junos_nat_config.j2"
+    dest: "./debug_configs/{{ inventory_hostname }}_nat_config.txt"
+  when: nat_remove == False and config_debug == True
+
+- name: Configure Junos NAT
+  junos_config:
+    lines: "{{ lookup('template', 'junos_nat_config.j2').split('\n') }}"
+    comment: Create NAT
+  when: nat_remove == False and config_debug == False
+
+- name: Remove Junos NAT
+  junos_config:
+    lines: "{{ lookup('template', 'junos_nat_remove.j2').split('\n') }}"
+    comment: Remove NAT
+  when: nat_remove == True and config_debug == False

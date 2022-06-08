@@ -1,0 +1,10 @@
+{% for policy in nat_policies %}
+{% if policy.type == 'PAT' %}
+set security nat source rule-set {{ policy.name }} from zone {{ policy.from_zone }}
+set security nat source rule-set {{ policy.name }} to zone {{ policy.to_zone }}
+{% for rule in policy.rules %}
+set security nat source rule-set {{ policy.name }} rule {{ rule.name }} match source-address {{ rule.src_address }}
+set security nat source rule-set {{ policy.name }} rule {{ rule.name }} then source-nat {{ rule.dest_interface }}
+{% endfor %}
+{% endif %}
+{% endfor %}
